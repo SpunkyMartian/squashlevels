@@ -10,7 +10,8 @@ import {
   updateDoc, 
   serverTimestamp,
   getDoc,
-  arrayUnion 
+  arrayUnion,
+  writeBatch 
 } from 'firebase/firestore';
 import type { Task, Attempt, UserProgress } from '@/types';
 
@@ -107,7 +108,7 @@ export const dbService = {
   // Admin Functions
   async bulkCreateTasks(tasks: Omit<Task, 'id'>[]) {
     try {
-      const batch = db.batch();
+      const batch = writeBatch(db);
       const tasksRef = collection(db, 'tasks');
       
       tasks.forEach(task => {
@@ -142,7 +143,9 @@ export const dbService = {
     const attempts = [];
     for (const taskId of taskIds) {
       const progress = await this.getUserProgress(userId, taskId);
-      attempts.push(...progress.attempts);
+      if (progress) {
+        attempts.push(...progress.attempts);
+      }
     }
     return attempts;
   },
