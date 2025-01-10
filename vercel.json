@@ -1,0 +1,18 @@
+{
+    "version": 2,
+    "builds": [
+      {
+        "src": "package.json",
+        "use": "@vercel/next"
+      }
+    ],
+    "env": {
+      "NEXT_PUBLIC_FIREBASE_API_KEY": "AIzaSyBtfMorZhB6qHbKeNoIDqj8y_iGuD22XNY",
+      "NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN": "squashlevels-9a756.firebaseapp.com",
+      "NEXT_PUBLIC_FIREBASE_PROJECT_ID": "squashlevels-9a756",
+      "NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET": "squashlevels-9a756.firebasestorage.app",
+      "NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID": "184100820025",
+      "NEXT_PUBLIC_FIREBASE_APP_ID": "1:184100820025:web:4510a978acea5c55f129e8",
+      "NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID": "G-52H98D6433"
+    }
+  }
