@@ -1,7 +1,6 @@
 // src/components/auth/LoginPage.tsx
 'use client';
 import { useAuth } from './AuthProvider';
-import { useState } from 'react';
 
 export default function LoginPage() {
   const { signInWithGoogle } = useAuth();
