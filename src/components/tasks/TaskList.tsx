@@ -25,6 +25,11 @@ export default function TaskList({ categoryId, categoryName, level, onBack }: Ta
   useEffect(() => {
     const loadTasks = async () => {
       try {
+        const q = query(
+          collection(db, 'tasks'),
+          where('categoryId', '==', categoryId),
+          where('level', '==', level)
+        );
         const querySnapshot = await getDocs(q);
         const tasksData = querySnapshot.docs.map(doc => ({
           id: doc.id,
@@ -40,6 +45,8 @@ export default function TaskList({ categoryId, categoryName, level, onBack }: Ta
   }, [categoryId, level]);
 
   const handleMetricSubmit = async (taskId: string, value: number) => {
+    if (!user) return;
+    
     try {
       await dbService.logAttempt(user.uid, taskId, {
         value,

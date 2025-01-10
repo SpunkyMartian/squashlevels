@@ -17,16 +17,3 @@ export default function Home() {
 
   return <CategoryGrid />;
 }
-
-// src/app/admin/page.tsx
-'use client';
-import ProtectedRoute from '@/components/auth/ProtectedRoute';
-import AdminPanel from '@/components/admin/AdminPanel';
-
-export default function AdminPage() {
-  return (
-    <ProtectedRoute requireAdmin>
-      <AdminPanel />
-    </ProtectedRoute>
-  );
-}
