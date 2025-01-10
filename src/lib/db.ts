@@ -136,5 +136,14 @@ export const dbService = {
       console.error('Error updating task:', error);
       throw error;
     }
-  }
+  },
+
+  async getUserAttempts(userId: string, taskIds: string[]) {
+    const attempts = [];
+    for (const taskId of taskIds) {
+      const progress = await this.getUserProgress(userId, taskId);
+      attempts.push(...progress.attempts);
+    }
+    return attempts;
+  },
 };

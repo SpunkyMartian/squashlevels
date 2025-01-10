@@ -12,6 +12,16 @@ export default function CategoryManager() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [newCategory, setNewCategory] = useState('');
 
+  const addCategory = () => {
+    if (!newCategory.trim()) return;
+    setCategories([...categories, {
+      id: Date.now().toString(),
+      name: newCategory,
+      order: categories.length
+    }]);
+    setNewCategory('');
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
@@ -24,9 +34,7 @@ export default function CategoryManager() {
         />
         <button 
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          onClick={() => {
-            // Add category logic
-          }}
+          onClick={addCategory}
         >
           Add Category
         </button>

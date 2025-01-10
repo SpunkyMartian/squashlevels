@@ -1,11 +1,11 @@
 // src/components/tasks/TaskList.tsx
 'use client';
 import { useState, useEffect } from 'react';
-import { ChevronLeft, PlayCircle } from 'lucide-react';
+import { PlayCircle } from 'lucide-react';
 import TaskProgress from './TaskProgress';
 import { db } from '@/lib/firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import type { Task } from '@/types';
+import type { Task, Attempt } from '@/types';
 import { dbService } from '@/lib/db';
 import { useAuth } from '@/components/auth/AuthProvider';
 
@@ -19,11 +19,12 @@ interface TaskListProps {
 export default function TaskList({ categoryId, categoryName, level, onBack }: TaskListProps) {
   const { user } = useAuth();
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [userMetrics, setUserMetrics] = useState([]);
+  const [userMetrics, setUserMetrics] = useState<Attempt[]>([]);
   const [notes, setNotes] = useState('');
 
   useEffect(() => {
-    const loadTasks = async () => {
+    const loadTasksAndMetrics = async () => {
+      if (!user) return;
       try {
         const q = query(
           collection(db, 'tasks'),
@@ -36,13 +37,17 @@ export default function TaskList({ categoryId, categoryName, level, onBack }: Ta
           ...(doc.data() as Omit<Task, 'id'>)
         })) as Task[];
         setTasks(tasksData);
+        
+        // Load user metrics for these tasks
+        const metrics = await dbService.getUserAttempts(user.uid, tasksData.map(t => t.id));
+        setUserMetrics(metrics);
       } catch (error) {
-        console.error('Error loading tasks:', error);
+        console.error('Error loading data:', error);
       }
     };
 
-    loadTasks();
-  }, [categoryId, level]);
+    loadTasksAndMetrics();
+  }, [categoryId, level, user]);
 
   const handleMetricSubmit = async (taskId: string, value: number) => {
     if (!user) return;
@@ -53,7 +58,9 @@ export default function TaskList({ categoryId, categoryName, level, onBack }: Ta
         notes,
         timestamp: new Date().toISOString()
       });
-      // Refresh tasks or update UI
+      // Update metrics after submission
+      const updatedMetrics = await dbService.getUserAttempts(user.uid, tasks.map(t => t.id));
+      setUserMetrics(updatedMetrics);
     } catch (error) {
       console.error('Error submitting metric:', error);
     }

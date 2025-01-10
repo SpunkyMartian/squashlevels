@@ -2,11 +2,22 @@
 'use client';
 import { useState } from 'react';
 import Papa from 'papaparse';
-import type { Task } from '@/types';
+
+interface CSVRow {
+  name: string;
+  categoryId: string;
+  level: string;
+  videoUrl: string;
+  benchmarks: {
+    beginner: string;
+    intermediate: string;
+    advanced: string;
+  };
+}
 
 export default function BulkImport() {
   const [importing, setImporting] = useState(false);
-  const [preview, setPreview] = useState<any[]>([]);
+  const [preview, setPreview] = useState<CSVRow[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -16,12 +27,12 @@ export default function BulkImport() {
     Papa.parse(file, {
       header: true,
       complete: (results) => {
-        setPreview(results.data);
+        setPreview(results.data as CSVRow[]);
         setError(null);
       },
-      error: (error) => {
+      error: (parseError) => {
         setError('Error parsing CSV file');
-        console.error('CSV Parse Error:', error);
+        console.error('CSV Parse Error:', parseError);
       }
     });
   };

@@ -1,7 +1,6 @@
 // src/components/tasks/LevelGrid.tsx
 'use client';
 import { useState } from 'react';
-import { ChevronLeft } from 'lucide-react';
 import TaskList from './TaskList';
 
 interface LevelGridProps {
